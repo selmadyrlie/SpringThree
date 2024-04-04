@@ -5,75 +5,51 @@
     <title>Spring Three</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="main.js"></script>
-    <link href="main.css">
+    <link href="main.css" rel="stylesheet">
 </head>
 <body>
-<div class="div1">
-<h1>Motorvognregister</h1>
-<table>
-    <tr>
-        <th>Personnummer</th>
-        <tr>
-        <td><label for="personnr"></label><input type="text" id="personnr"/></td>
-    <tr>
-    </tr>
-    <tr>
-        <th>Navn</th>
-    </tr>
-    <tr>
-        <td><label for="navn"></label><input type="text" id="navn"/></td>
-    </tr>
-    <tr>
-        <th>Adresse</th>
-    </tr>
-    <tr>
-        <td><label for="adresse"></label><input type="text" id="adresse"/></td>
-    </tr>
+<div class="container">
+    <div class="row">
+        <div class="col-md-4">
+            <h1>Motorvognregister</h1>
+            <form class="form">
+                <div class="form-group">
+                    <label for="personnr">Personnr</label>
+                    <input type="text" class="form-control" id="personnr"/>
+                </div>
+                <div class="form-group">
+                    <label for="navn">Navn</label>
+                    <input type="text" class="form-control" id="navn"/>
+                </div>
+                <div class="form-group">
+                    <label for="adresse">Adresse</label>
+                    <input type="text" class="form-control" id="adresse"/>
+                </div>
+                <div class="form-group">
+                    <label for="kjennetegn">Kjennetegn</label>
+                    <input type="text" class="form-control" id="kjennetegn"/>
+                </div>
+                <div class="form-group">
+                    <label for="merke">Merke</label>
+                    <div id="merke" class="dropdown">
 
-    <tr>
-        <th>Kjennetegn</th>
-    </tr>
-    <tr>
-        <td><label for="kjennetegn"></label><input type="text" id="kjennetegn"/></td>
-    </tr>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="type">Type</label>
+                    <div id="type" class="dropdown">
 
-    <tr>
-        <th>Bilmerke</th>
-    </tr>
-    <tr>
-        <td><label for="merke"></label><select id="merke">
-            <option value="opt1">Toyota</option>
-            <option value="opt2">Volvo</option>
-            <option value="opt3">Jeep</option>
-        </select>
-        </td>
-    </tr>
-    <tr>
-        <th>Biltype</th>
-    </tr>
-
-    <tr>
-        <td><label for="type"></label><select id="type">
-            <option value="opt1">V30</option>
-            <option value="opt2">R2D2</option>
-            <option value="opt3">V40</option>
-        </select>
-        </td>
-    </tr>
-</table>
-<br>
-
-<button id="regMotorvogn">Registrer</button>
-
+                    </div>
+                </div>
+            </form>
+            <button class="btn btn-primary" onclick="regMotorvogn()">Registrer</button><br/>
+        </div>
+        <div class="col-md-8">
+            <h3>Alle bilene:</h3>
+            <div id="bilene" class="table-responsive"></div>
+            <button class="btn btn-danger" onclick="slettAlle()">Slett alle biler</button>
+        </div>
+    </div>
 </div>
-
-<div class="div2">
-<h2>Alle bilene:</h2>
-<div id="bilene"></div>
-<button id="slettAlle">Slett alle</button>
-<br>
-</div>
-
-
 </body>
 </html>

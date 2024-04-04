@@ -1,67 +1,83 @@
-
-
-$(() => {
-    $("#regMotorvogn").click(() => {
-        const personnr = $("#personnr");
-        const navn = $("#navn");
-        const adresse = $("#adresse");
-        const kjennetegn = $("#kjennetegn");
-        const merke = $("#merke");
-        const type = $("#type");
-
-        const motorvogn = {
-            personnr: personnr.val(),
-            navn: navn.val(),
-            adresse: adresse.val(),
-            kjennetegn: kjennetegn.val(),
-            merke: merke.val(),
-            type: type.val()
-        };
-
-        if (inputval(motorvogn)) {
-            $.post("/motor", motorvogn, () => hent());
-
-            personnr.val("");
-            navn.val("");
-            adresse.val("");
-            kjennetegn.val("");
-            merke.val("");
-            type.val("");
-        } else {
-            console.log("Mangler input");
-        }
-    });
-
-    $("#slettAlle").click(() => {
-        $.ajax("/motor", {
-            type: 'DELETE',
-            success: () => hent(),
-            error: (jqXhr, textStatus, errorMessage) => console.log(errorMessage)
-        });
-    });
+$(function(){  // kjøres når dokumentet er ferdig lastet
+    hentAlleBiler();
 });
 
-const hent = () => $.get("/motor", biler => formater(biler));
-
-const inputval = motorvogn => {
-    if (motorvogn.personnr === "") return false
-    else if (motorvogn.navn === "") return false
-    else if (motorvogn.adresse === "") return false
-    else if (motorvogn.kjennetegn === "") return false
-    else if (motorvogn.merke === "") return false
-    else return motorvogn.type !== "";
+function hentAlleBiler() {
+    $.get( "/hentBiler", function( biler ) {
+        formaterBiler(biler);
+    });
 }
 
-const formater = biler => {
-    let ut = "<table><tr><th>Personnr</th><th>Navn</th><th>Adresse</th>" +
-        "<th>Kjennetegn</th><th>Merke</th><th>Type</th></tr>";
+function formaterBiler(biler){
+    let ut = "<select id='valgtMerke' onchange='finnTyper()'>";
+    let forrigeMerke = "";
+    ut+="<option>Velg merke</option>";
+    for (const bil of biler){
+        if(bil.merke !== forrigeMerke){
+            ut+="<option>"+bil.merke+"</option>";
+        }
+        forrigeMerke = bil.merke;
+    }
+    ut+="</select>";
+    $("#merke").html(ut);
+}
 
-    for (let bil of biler) {
+function finnTyper(){
+    const valgtMerke = $("#valgtMerke").val();
+    $.get( "/hentBiler", function( biler ) {
+        formaterTyper(biler,valgtMerke);
+    });
+}
+function formaterTyper(biler,valgtMerke){
+    let ut = "<select id='valgtType'>";
+    for(const bil of biler ){
+        if(bil.merke === valgtMerke){
+            ut+="<option>"+bil.type+"</option>";
+        }
+    }
+    ut+="</select>";
+    $("#type").html(ut);
+}
+
+function regMotorvogn() {
+    const motorvogn = {
+        personnr : $("#personnr").val(),
+        navn : $("#navn").val(),
+        adresse : $("#adresse").val(),
+        kjennetegn : $("#kjennetegn").val(),
+        merke : $("#valgtMerke").val(),
+        type : $("#valgtType").val(),
+    };
+    $.post("/lagre", motorvogn, function(){
+        hentAlle();
+    });
+    $("#personnr").val("");
+    $("#navn").val("");
+    $("#adresse").val("");
+    $("#kjennetegn").val("");
+    $("#valgtMerke").val("");
+    $("#valgtType").val("");
+}
+
+function hentAlle() {
+    $.get( "/hentAlle", function( biler ) {
+        formaterData(biler);
+    });
+}
+
+function formaterData(biler) {
+    let ut = "<table class='table table-striped'><tr><th>Personnr</th><th>Navn</th><th>Adresse</th>" +
+        "<th>Kjennetegn</th><th>Merke</th><th>Type</th></tr>";
+    for (const bil of biler) {
         ut += "<tr><td>" + bil.personnr + "</td><td>" + bil.navn + "</td><td>" + bil.adresse + "</td>" +
             "<td>" + bil.kjennetegn + "</td><td>" + bil.merke + "</td><td>" + bil.type + "</td></tr>";
     }
-
     ut += "</table>";
-
     $("#bilene").html(ut);
+}
+
+function slettAlle() {
+    $.get( "/slettAlle", function() {
+        hentAlle();
+    });
 }
